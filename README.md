@@ -1,4 +1,4 @@
-# Wireless Indoor Localization
+# Linux Port of SSD1306 Oled Controller Driver
 
 ## Introduction
 This is a Linux port of the SSD1306 driver originally implemented for the ESP-IDF framework by `user001` [here](github.com/user001/espidf-ssd1306). The SSD1306 is a monochrome OLED display controller.
@@ -7,20 +7,21 @@ This is a Linux port of the SSD1306 driver originally implemented for the ESP-ID
 
 - [x] Basic initialization and configuration.
 - [x] Device file Operations
-        [x] Open
-        [x] Read
-        [x] Write
-        [x] ioctl
+  - [x] Open
+  - [x] Read
+  - [x] Write
+  - [x] ioctl
 - [ ] Drawing primitives: lines, rectangles, circles.
 - [x] Text rendering.
 - [ ] Screen rotation support.
 - [x] I2C communication protocol support.
 - [ ] SPI communication protocol support.
 - [x] User space sample applications
-        [ ] Open
-        [ ] Write
-        [ ] Read
-        [ ] ioctl
+  - [ ] Open
+  - [ ] Write
+  - [ ] Read
+  - [ ] ioctl
+
 
 
 ## Environment
