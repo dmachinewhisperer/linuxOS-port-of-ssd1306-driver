@@ -27,10 +27,10 @@ This is a Linux port of the SSD1306 driver originally implemented for the ESP-ID
 ## Environment
 
 ### Toolchain
-The toolchain was built with Crosstool-NG using the `armv8-rpi3-linux-gnueabihf` sample config
+The toolchain was built with crosstool-NG using the `armv8-rpi3-linux-gnueabihf` sample config
 
 ### Linux Kernel
-The Linux Kernel I used is Raspberry Pi Foundations fork of the mainline kernel found [here] (https://github.com/raspberrypifoundation)
+The Linux Kernel I used is Raspberry Pi Foundations fork of the mainline kernel found [here](https://github.com/raspberrypifoundation)
 
 ### Development Board
 Tested on Raspberrypi 3A+ and 3B+ models (with BCM2837B0 SOC)
@@ -57,11 +57,11 @@ Here is a sample device tree modification for using the i2c1 controller. In bold
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_pins>;
 	clock-frequency = <100000>;
-	**status = "okay";
-	ssd1306@3c{
-		compactible = "solomon,ssd1306";
-		reg = <0x3c>;
-	};**
+	**status = "okay";**
+	**ssd1306@3c{**
+		**compactible = "solomon,ssd1306";**
+		**reg = <0x3c>;**
+	**};**
 };
 ```
 ## License
