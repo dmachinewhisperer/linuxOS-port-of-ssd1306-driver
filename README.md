@@ -51,17 +51,20 @@ To use this driver, follow these steps:
 The bcm28xx* device tree are the upsteam Linux support files for the bcm SOC family while the bcm27xx* are downstream code by Rasberry Pi Foundations. See [here](https://forums.raspberrypi.com/viewtopic.php?t=238262)
 
 ### Modifying the Device Tree to Include the ssd1306 controller
-Here is a sample device tree modification for using the i2c1 controller. In bold are the added text. (also see the modfied .dts file on this repo. )
+Here is a sample device tree modification for using the i2c1 controller. (also see the modfied .dts file on this repo. )
 ```
 &i2c1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c1_pins>;
 	clock-frequency = <100000>;
-	**status = "okay";**
-	**ssd1306@3c{**
-		**compactible = "solomon,ssd1306";**
-		**reg = <0x3c>;**
-	**};**
+
+    //start
+	status = "okay";
+	ssd1306@3c{
+		compactible = "solomon,ssd1306";
+		reg = <0x3c>;
+	};
+    //end
 };
 ```
 ## License
