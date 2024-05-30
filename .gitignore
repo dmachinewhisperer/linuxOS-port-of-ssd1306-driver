@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 
+# device tree blobs
+*.dtb
+
 # Object files
 *.o
 *.ko
