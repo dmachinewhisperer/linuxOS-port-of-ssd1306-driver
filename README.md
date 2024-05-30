@@ -1,7 +1,7 @@
 # Linux Port of SSD1306 Oled Controller Driver
 
 ## Introduction
-This is a Linux port of the SSD1306 driver originally implemented for the ESP-IDF framework by `user001` [here](github.com/user001/espidf-ssd1306). The SSD1306 is a monochrome OLED display controller.
+This is a Linux port of the SSD1306 driver originally implemented for the ESP-IDF framework by `user001` [here](github.com/user001/espidf-ssd1306). The SSD1306 is a monochrome OLED display controller. This implementation is based on the linux `i2c subsystem`
 
 ### Features Implemented
 (Still in progress)
@@ -47,6 +47,9 @@ To use this driver, follow these steps:
 4. Use the userspace application to interact with the device in `/dev/ssd1306X`
 
 ## Notes
+### The Porting Process
+The architecture independent part of the orginal driver ssd1306.c is largely untouched. The corresponding original sources files were renamed to `linux_xxxx`. Mostly the function prototypes were modified to return values to the caller as it typical with linux driver functions and logging functions changed appropirately. 
+
 ### Device Tree to Use
 The bcm28xx* device tree are the upsteam Linux support files for the bcm SOC family while the bcm27xx* are downstream code by Rasberry Pi Foundations. See [here](https://forums.raspberrypi.com/viewtopic.php?t=238262)
 
