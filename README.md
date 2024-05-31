@@ -1,7 +1,7 @@
 # Linux Port of SSD1306 Oled Controller Driver
 
 ## Introduction
-This is a Linux port of the SSD1306 driver originally implemented for the ESP-IDF framework by `user001` [here](github.com/user001/espidf-ssd1306). The SSD1306 is a monochrome OLED display controller. This implementation is based on the linux `i2c subsystem`
+This is a Linux port of the SSD1306 driver originally implemented for the ESP-IDF framework by `uwelch001` [here](github.com/uwelch001/espidf-ssd1306). The SSD1306 is a monochrome OLED display controller. This implementation is based on the linux `i2c subsystem`
 
 ### Features Implemented
 (Still in progress)
