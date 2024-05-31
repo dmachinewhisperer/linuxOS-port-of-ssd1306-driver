@@ -2,7 +2,7 @@ ifneq ($(KERNELRELEASE),)
 
 # kbuild part of makefile
 obj-m  := ssd1306_oled_driver.o
-ssd1306_oled_driver-y := linux_ssd1306_i2c.o linux_ssd1306_spi.o linux_ssd1306.o linux_ssd1306_user.o
+ssd1306_oled_driver-y := linux_ssd1306_i2c.o linux_ssd1306_spi.o linux_ssd1306_staging.o linux_ssd1306_main.o
 
 else
 
