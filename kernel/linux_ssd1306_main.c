@@ -12,8 +12,10 @@
 /* Device paramters: Here configured for a 128 * 32 OLED display */
 static unsigned  width 		= 128;
 static unsigned  height 	= 32;
+#if 0
 module_param(width, unsigned, S_IRUGO);
 module_param(height, unsigned, S_IRUGO);
+#endif
 
 /* These commands initialize the display */
 static ssize_t ssd1306_open(struct inode *inode, struct file *file)
@@ -103,18 +105,20 @@ static ssize_t ssd1306_read(struct file *file, const char __user *userbuf, size_
 /* Writing from the terminal command line */
 static ssize_t ssd1306_write(struct file *file, char __user *userbuf, size_t count, loff_t *ppos)
 {
+	int ret;
+	int filesize;
+	bool invert = 0;
 
 	struct ssd1306_dev * ssd1306;
 
 	ssd1306 = container_of(file->private_data, struct ssd1306_dev, ssd1306_miscdevice);
-	int filesize = ssd1306->oled_dev._pages * 16;
+	filesize = ssd1306->oled_dev._pages * 16;
 	
 	if ( *ppos >= filesize ) 
 		return -EINVAL;
 	if (*ppos + count > filesize)
 	 	count = filesize - *ppos;
 	
-	int ret;
 	char buf[count];
 
 	dev_info(&ssd1306->client->dev, "ssd1306_write_file entered on %s\n", ssd1306->name);
@@ -125,12 +129,9 @@ static ssize_t ssd1306_write(struct file *file, char __user *userbuf, size_t cou
 		return -EFAULT;
 	}
 
-    //ssd1306_display_text(SSD1306_t * dev, int page, char * text, int text_len, bool invert)
-
 	//*ppos points to the page to begin writing.
 	//The underlying driver does not support starting from seg > 0 yet.
 
-    bool invert = 0;
     ret = ssd1306_display_text(&ssd1306->oled_dev , *ppos, buf, count, invert);
 	if(ret < 0){
 		dev_err(&ssd1306->client->dev, "the device is not found\n");
@@ -147,64 +148,100 @@ static ssize_t ssd1306_write(struct file *file, char __user *userbuf, size_t cou
 }
 
 static long ssd1306_ioctl(struct file *file, unsigned int cmd, unsigned long arg){
-	struct ssd1306_dev * ssd1306;
 	int temp; 
-	u8 buf = NULL; 
-
-	struct ssd1306_dev * ssd1306 = container_of(file->private_data, struct ssd1306_dev, ssd1306_miscdevice);
-	SSD1306_t *dev = &ssd1306->oled_dev; 
-	int size = dev->_width * dev->_pages;
+	int size;
+	u8 *buf = NULL; 
+	SSD1306_t *dev;
+	struct ssd1306_dev *ssd1306;
+	struct function_args *args = NULL;
+	
+	ssd1306 = container_of(file->private_data, struct ssd1306_dev, ssd1306_miscdevice);
+	dev = &ssd1306->oled_dev; 
+	size = dev->_width * dev->_pages;
 	
     switch(cmd){
         case SSD1306_GET_ADDR:
-			temp = ssd1306_get_addr(dev);
-			copy_to_user((int*)arg, &temp, sizeof(int));
+			temp = ssd1306_get_address(dev);
+			if(copy_to_user((int*)arg, &temp, sizeof(int))){
+				pr_info("Failed to copy value to user\n");
+				return -EFAULT;
+			}
             break;
 
         case SSD1306_GET_WIDTH:
 			temp = ssd1306_get_width(dev);
-			copy_to_user((int*)arg, &temp, sizeof(int));
+			if(copy_to_user((int*)arg, &temp, sizeof(int))){
+				pr_info("Failed to copy value to user\n");
+				return -EFAULT;
+			}
             break;
  
         case SSD1306_GET_HEIGHT:
 			temp = ssd1306_get_height(dev);
-			copy_to_user((int*)arg, &temp, sizeof(int));
+			if(copy_to_user((int*)arg, &temp, sizeof(int))){
+				pr_info("Failed to copy value to user\n");
+				return -EFAULT;
+			}
             break;
 
         case SSD1306_GET_PAGES:
 			temp = ssd1306_get_pages(dev);
-			copy_to_user((int*)arg, &temp, sizeof(int));
+			if(copy_to_user((int*)arg, &temp, sizeof(int))){
+				pr_info("Failed to copy value to user\n");
+				return -EFAULT;
+			}
             break;
 
         case SSD1306_SHOW_BUFFER:
 			temp = ssd1306_show_buffer(dev);
-			copy_to_user((int*)arg, &temp, sizeof(int));
+			if(copy_to_user((int*)arg, &temp, sizeof(int))){
+				pr_info("Failed to copy value to user\n");
+				return -EFAULT;
+			}
             break;
 			
         case SSD1306_SET_BUFFER:
             buf = kmalloc(size, GFP_KERNEL);
-            copy_from_user(buf, (u8 *)arg, size);
+			if(!buf){
+				return -ENOMEM;
+			}
+			if(copy_from_user(buf, (u8 *)arg, size)) {
+				dev_err(&ssd1306->client->dev, "Bad copied value\n");
+				return -EFAULT;
+			}
 			ssd1306_set_buffer(dev, buf);
 			kfree(buf);
             break;
 
         case SSD1306_GET_BUFFER:
             buf = kmalloc(size, GFP_KERNEL);
+			if(!buf){
+				return -ENOMEM;
+			}
 			ssd1306_get_buffer(dev, buf);
-            copy_to_user((u8 *)arg, buf, size);
+            if(copy_to_user((u8 *)arg, buf, size)){
+				pr_info("Failed to copy value to user\n");
+				return -EFAULT;
+			}
 			kfree(buf);
             break;		
 
         case SSD1306_DISPLAY_TEXT_X3:
-			struct function_args *args = (function_args*)kmalloc(sizeof(function_args), GFP_KERNEL);
-			copy_from_user(args, (function_args *)arg, sizeof(function_args));
+			args = (struct function_args*)kmalloc(sizeof(struct function_args), GFP_KERNEL);
+			if(copy_from_user(args, (struct function_args *)arg, sizeof(struct function_args))){
+				dev_err(&ssd1306->client->dev, "Bad copied value\n");
+				return -EFAULT;
+			}
 			ssd1306_display_text_x3(dev, args->page, args->text, args->text_len, args->invert);
 			kfree(args);
             break;
 			
 		case SSD1306_CLEAR_LINE:
-			struct function_args *args = (function_args*)kmalloc(sizeof(function_args), GFP_KERNEL);
-			copy_from_user(args, (function_args *)arg, sizeof(function_args));
+			args = (struct function_args*)kmalloc(sizeof(struct function_args), GFP_KERNEL);
+			if(copy_from_user(args, (struct function_args *)arg, sizeof(struct function_args))){
+				dev_err(&ssd1306->client->dev, "Bad copied value\n");
+				return -EFAULT;
+			}
 			ssd1306_clear_line(dev, args->line, args->invert);
 			kfree(args);
 			break;
@@ -215,7 +252,6 @@ static long ssd1306_ioctl(struct file *file, unsigned int cmd, unsigned long arg
 
 		case SSD1306_SET_CONTRAST:
 			ssd1306_contrast(dev, (int)arg);
-			kfree(args);
 			break;	
 
 		case SSD1306_FADEOUT:
