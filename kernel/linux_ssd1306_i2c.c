@@ -60,7 +60,7 @@ s32 i2c_init(SSD1306_t *dev, int width, int height)
         OLED_CMD_DISPLAY_ON
     };
 
-    n_commands = sizeof(ssd1306_init_commands)/sizeof(u8)
+    n_commands = sizeof(ssd1306_init_commands)/sizeof(u8);
 
     struct ssd1306_dev *ssd1306 = container_of(dev, struct ssd1306_dev, oled_dev);
 
@@ -105,7 +105,7 @@ s32 i2c_display_image(SSD1306_t *dev, int page, int seg, u8 * images, int width)
         (0xB0 | _page)              // Set Page Start Address for Page Addressing Mode
     };
 
-    n_commands = sizeof(ssd1306_commands)/sizeof(u8)
+    n_commands = sizeof(ssd1306_commands)/sizeof(u8);
 
     struct ssd1306_dev *ssd1306 = container_of(dev, struct ssd1306_dev, oled_dev);
     ret = i2c_smbus_write_i2c_block_data(ssd1306->client, OLED_CONTROL_BYTE_CMD_STREAM, n_commands, ssd1306_commands);
@@ -143,16 +143,17 @@ s32 i2c_display_image(SSD1306_t *dev, int page, int seg, u8 * images, int width)
 
 }
 
-/*
+
 s32 i2c_contrast(SSD1306_t * dev, int contrast) {
+    s32 ret;
 	u8 _contrast = contrast;
 	if (contrast < 0x0) _contrast = 0;
 	if (contrast > 0xFF) _contrast = 0xFF;
 
     const u8 ssd1306_commands[] = {
-        OLED_CONTROL_BYTE_CMD_STREAM,
+        OLED_CMD_SET_CONTRAST,
         _contrast
-    }
+    };
     
     struct ssd1306_dev *ssd1306 = container_of(dev, struct ssd1306_dev, oled_dev);
     ret = i2c_smbus_write_i2c_block_data(ssd1306->client, OLED_CONTROL_BYTE_CMD_STREAM, sizeof(ssd1306_commands)/sizeof(u8), ssd1306_commands);
@@ -167,6 +168,7 @@ s32 i2c_contrast(SSD1306_t * dev, int contrast) {
 
 
 s32 i2c_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll) {
+    s32 ret;
     u8 *ssd1306_commands;
     int n_commands;
     if(scroll == SCROLL_RIGHT || scroll == SCROLL_LEFT){
@@ -186,22 +188,18 @@ s32 i2c_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll) {
             0x00,                               
             0xFF,
             OLED_CMD_ACTIVE_SCROLL              //2F
-        }
+        };
         ssd1306_commands = cmds; 
         n_commands = sizeof(cmds)/sizeof(u8);
     }
 
     if(scroll==SCROLL_DOWN || scroll==SCROLL_UP){
-        u8 OLED_CMD_HEIGHT; 
-        u8 OLED_CMD_VERTICAL_SCROLL_OFFSET;
-        if(dev->_height == 64){
-            OLED_CMD_HEIGHT = 0x40;
-        } else{
+        u8 OLED_CMD_HEIGHT = 0x40; 
+        u8 OLED_CMD_VERTICAL_SCROLL_OFFSET = 0x3F;
+        if(dev->_height == 32){
             OLED_CMD_HEIGHT = 0x20;
-        }
-        if(scroll == SCROLL_DOWN){
-            OLED_CMD_VERTICAL_SCROLL_OFFSET = 0x3F;
-        } else{
+        } 
+        if(scroll == SCROLL_UP){
             OLED_CMD_VERTICAL_SCROLL_OFFSET = 0x01;
         }
         u8 cmds[] = {
@@ -215,7 +213,7 @@ s32 i2c_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll) {
             0x00,
             OLED_CMD_HEIGHT,
             OLED_CMD_ACTIVE_SCROLL              //2F
-        }
+        };
         ssd1306_commands = cmds;
         n_commands = sizeof(cmds)/sizeof(u8);
     }
@@ -224,7 +222,7 @@ s32 i2c_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll) {
 	if (scroll == SCROLL_STOP) {
         u8 cmds[] = {
             OLED_CMD_DEACTIVE_SCROLL            //2E
-        }
+        };
 
         ssd1306_commands = cmds;
         n_commands = sizeof(cmds)/sizeof(u8);
@@ -241,5 +239,3 @@ s32 i2c_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll) {
 
     return 0;
 }
-
-**/
