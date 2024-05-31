@@ -3,7 +3,7 @@
  #include <fcntl.h>
  #include <unistd.h>
 
- #include "linux_ssd1306_ioctl.h"
+ #include "ssd1306_ioctl.h"
  
  int main()
  {
