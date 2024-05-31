@@ -1,4 +1,3 @@
-#include <linux/i2c.h>
 #include <linux/uaccess.h>
 
 #include "linux_ssd1306.h"

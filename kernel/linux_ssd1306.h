@@ -115,16 +115,38 @@ extern "C"
 #endif
 
 /* linux_ssd1306_i2c.c */
+s32 i2c_contrast(SSD1306_t * dev, int contrast);
 s32 i2c_init(SSD1306_t *dev, int width, int height) ;
+s32 i2c_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll);
 s32 i2c_display_image(SSD1306_t * dev, int page, int seg, uint8_t * images, int width);
 
 /* linux_ssd1306_spi.c */
+s32 spi_contrast(SSD1306_t * dev, int contrast);
 s32 spi_init(SSD1306_t *dev, int width, int height);
+s32 spi_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll);
 s32 spi_display_image(SSD1306_t * dev, int page, int seg, uint8_t * images, int width);
 
 /* linux_ssd1306.c*/
 s32 ssd1306_init(SSD1306_t * dev, int width, int height);
+//s32 ssd1306_display_text(SSD1306_t * dev, int page, char * text, int text_len, bool invert);
+
+
+void ssd1306_fadeout(SSD1306_t * dev);
+int ssd1306_get_pages(SSD1306_t * dev);
+int ssd1306_get_width(SSD1306_t * dev);
+void ssd1306_flip(u8 *buf, size_t blen);
+int ssd1306_get_height(SSD1306_t * dev);
+s32 ssd1306_show_buffer(SSD1306_t * dev);
+int ssd1306_get_address(SSD1306_t * dev);
+void ssd1306_invert(u8 *buf, size_t blen);
+void ssd1306_contrast(SSD1306_t * dev, int contrast);
+void ssd1306_set_buffer(SSD1306_t * dev, u8 * buffer);
+void ssd1306_get_buffer(SSD1306_t * dev, u8 * buffer);
+void ssd1306_clear_screen(SSD1306_t * dev, bool invert);
+void ssd1306_clear_line(SSD1306_t * dev, int page, bool invert);
+void ssd1306_hardware_scroll(SSD1306_t * dev, ssd1306_scroll_type_t scroll);
 s32 ssd1306_display_text(SSD1306_t * dev, int page, char * text, int text_len, bool invert);
+void ssd1306_display_text_x3(SSD1306_t * dev, int page, char * text, int text_len, bool invert);
 
 #ifdef __cplusplus
 }
