@@ -4,6 +4,9 @@
 # device tree blobs
 *.dtb
 
+# custom backup files
+*.bak
+
 # Object files
 *.o
 *.ko
