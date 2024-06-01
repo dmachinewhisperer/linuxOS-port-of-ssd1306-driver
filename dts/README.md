@@ -1,0 +1,1 @@
+## Device Tree For bcm2710 SOC
